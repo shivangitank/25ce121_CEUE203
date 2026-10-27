@@ -142,6 +142,10 @@ public abstract class Account implements Transactable, InterestBearing {
      * Moves money to another account. It is all-or-nothing: if the deposit
      * side fails after the withdrawal succeeded, the money is put back and the
      * original exception is re-thrown to the caller.
+     * <p>
+     * Both accounts are locked for the whole transfer, always in the same order
+     * (smaller account number first). Two opposite transfers, A to B and B to A,
+     * therefore ask for the locks in the same order and can never deadlock.
      */
     public void transfer(Account to, long amount) throws BankException {
         if (to == null) {
@@ -150,20 +154,26 @@ public abstract class Account implements Transactable, InterestBearing {
         if (to.equals(this)) {
             throw new BankException("Cannot transfer from " + accountNumber + " to itself");
         }
-        boolean withdrawn = false;
-        boolean completed = false;
-        try {
-            withdraw(amount);
-            withdrawn = true;
-            to.deposit(amount);
-            completed = true;
-        } catch (BankException e) {
-            if (withdrawn) {
-                refund(amount);
+        Account first = accountNumber.compareTo(to.accountNumber) < 0 ? this : to;
+        Account second = first == this ? to : this;
+        synchronized (first) {
+            synchronized (second) {
+                boolean withdrawn = false;
+                boolean completed = false;
+                try {
+                    withdraw(amount);
+                    withdrawn = true;
+                    to.deposit(amount);
+                    completed = true;
+                } catch (BankException e) {
+                    if (withdrawn) {
+                        refund(amount);
+                    }
+                    throw e;
+                } finally {
+                    lastActivity = (completed ? "Transferred " : "Failed transfer of ") + amount + " to " + to.accountNumber;
+                }
             }
-            throw e;
-        } finally {
-            lastActivity = (completed ? "Transferred " : "Failed transfer of ") + amount + " to " + to.accountNumber;
         }
     }
 
