@@ -1,3 +1,10 @@
+package demo;
+
+import model.Account;
+import model.CurrentAccount;
+import model.Customer;
+import model.SavingsAccount;
+
 /**
  * Practical 3 demo: toString(), equals()/hashCode(), the nested Address class,
  * clone() and the instanceof operator.

@@ -1,3 +1,12 @@
+package demo;
+
+import model.Account;
+import model.Command;
+import model.SavingsAccount;
+import util.CommandParser;
+import util.StatementFormatter;
+import util.Validator;
+
 /**
  * Practical 4 demo: regex validators, the Command record, CommandParser and
  * the StringBuilder-based statement.

@@ -1,8 +1,10 @@
+package model;
+
 /**
  * Current (business) account: no interest, but the balance may go below zero
- * down to minus the overdraft limit.
+ * down to minus the overdraft limit. Business accounts are Premium (higher limits).
  */
-public class CurrentAccount extends Account {
+public class CurrentAccount extends Account implements Premium {
     public static final long DEFAULT_OVERDRAFT = 10000;
 
     private final long overdraftLimit;

@@ -4,20 +4,28 @@ Console banking application built across the CEUE203 Object-Oriented Programming
 
 **Student:** Shivangi Tank (25CE121)
 
-## Practical 1 - menu shell
+## Packages
 
-The program prints the bank header, shows a numbered menu and reads the choice with a
-`Scanner`. A switch expression maps each `MenuOption` to a placeholder message. The menu
-repeats until **Exit** is chosen. Invalid input is rejected and the user is asked again.
+| Package   | Contents |
+|-----------|----------|
+| `app`     | `MiniBank` (main menu) and `MenuOption` |
+| `model`   | Accounts, `Customer`, records/enums and the interfaces `Transactable`, `InterestBearing`, `WithdrawRule`, `Premium` |
+| `util`    | `Validator`, `CommandParser`, `StatementFormatter` |
+| `service` | `WithdrawPolicy` (standard withdrawal rules) |
+| `demo`    | `LabNNDemo` programs showing each practical's requirements |
 
-### Compile and run
+## Build and run
 
 Requires JDK 17 or newer.
 
 ```bash
-javac -d out src/*.java
-java -cp out MiniBank
+./build.sh                                        # Linux / macOS / Codespaces
+powershell -ExecutionPolicy Bypass -File build.ps1 # Windows
+
+java -jar minibank.jar                             # start the menu
+java -cp minibank.jar demo.Lab06Demo               # run a practical's demo
 ```
 
-`javac` compiles the `.java` source files into `.class` bytecode files in `out/`;
-`java` starts the JVM, which loads `MiniBank.class` and runs its `main` method.
+The build compiles everything under `src/main/java` into `out/classes` and packages it as
+`minibank.jar`. The manifest (`manifest.txt`) sets `Main-Class: app.MiniBank`, so
+`java -jar` knows which class has `main`.

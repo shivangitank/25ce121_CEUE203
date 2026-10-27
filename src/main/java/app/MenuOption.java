@@ -1,3 +1,5 @@
+package app;
+
 /**
  * The fixed set of actions MiniBank offers. The menu number shown to the
  * user is the constant's position in this list (ordinal + 1).

@@ -1,4 +1,11 @@
+package demo;
+
 import java.time.LocalDate;
+
+import model.Account;
+import model.CurrentAccount;
+import model.FixedDepositAccount;
+import model.SavingsAccount;
 
 /**
  * Practical 5 demo: an Account[] holding three different subclasses. The same

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Savings account: earns 4% a year and must always keep a minimum balance.
  */

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Read-only details of the bank, printed as the application header.
  * A record gets its constructor, accessors (name(), branch()), equals,

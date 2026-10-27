@@ -1,3 +1,8 @@
+package util;
+
+import model.Command;
+import model.TransactionType;
+
 /**
  * Turns a typed line such as "DEPOSIT AC0001 500" into a Command.
  * Every part is checked, so a Command that comes out of parse() is always valid.

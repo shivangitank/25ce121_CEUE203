@@ -1,10 +1,12 @@
+package model;
+
 /**
  * Base class for every MiniBank account. The balance is private and changes
  * only through deposit() and withdraw() - there is deliberately no public
  * setBalance(). Each subclass decides its own interest rate and withdrawal
  * rule; withdraw() calls canWithdraw(), so the right rule is picked at run time.
  */
-public abstract class Account {
+public abstract class Account implements Transactable, InterestBearing {
     private static int accountCounter = 0;
 
     private final String accountNumber;
@@ -85,11 +87,6 @@ public abstract class Account {
         return true;
     }
 
-    /** Interest earned in one month at the current balance. */
-    public double monthlyInterest() {
-        return balance * interestRate() / 100 / 12;
-    }
-
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -104,6 +101,11 @@ public abstract class Account {
 
     public boolean isActive() {
         return active;
+    }
+
+    /** Freezes (false) or re-opens (true) the account. */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     /** "SavingsAccount" -> "Savings", "FixedDepositAccount" -> "FixedDeposit". */

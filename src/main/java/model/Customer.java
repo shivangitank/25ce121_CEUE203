@@ -1,3 +1,5 @@
+package model;
+
 /**
  * A bank customer. The customer id is generated once from a static counter
  * and can never change afterwards.

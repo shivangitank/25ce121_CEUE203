@@ -1,3 +1,10 @@
+package demo;
+
+import model.Account;
+import model.CurrentAccount;
+import model.Customer;
+import model.SavingsAccount;
+
 /**
  * Practical 2 demo: Customer and Account objects, an Account[] array and the
  * encapsulated deposit / withdraw logic.

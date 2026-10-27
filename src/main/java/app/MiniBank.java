@@ -1,4 +1,8 @@
+package app;
+
 import java.util.Scanner;
+
+import model.BankInfo;
 
 /**
  * MiniBank - console banking application (CEUE203 OOP mini project).

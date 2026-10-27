@@ -1,6 +1,10 @@
+package util;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import model.Account;
 
 /**
  * Builds a multi-line account statement. StringBuilder appends into one
