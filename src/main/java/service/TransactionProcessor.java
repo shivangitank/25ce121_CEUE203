@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
@@ -10,11 +11,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import exception.AccountNotFoundException;
 import exception.BankException;
+import model.Account;
+import model.Command;
 
 /**
  * Runs banking tasks on a fixed pool of 4 reusable threads instead of
- * creating a new thread for every task.
+ * creating a new thread for every task. The accounts it works on are kept in a
+ * ConcurrentHashMap, which many pool threads can read and update safely at once.
  */
 public class TransactionProcessor {
     public static final int POOL_SIZE = 4;
@@ -27,15 +32,48 @@ public class TransactionProcessor {
     }
 
     private final ExecutorService pool;
+    private final ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, AtomicInteger> tasksPerThread = new ConcurrentHashMap<>();
     private final AtomicInteger succeeded = new AtomicInteger();
     private final Queue<String> failures = new ConcurrentLinkedQueue<>();
     private final Queue<String> warnings = new ConcurrentLinkedQueue<>();
+    private final Queue<Command> completedCommands = new ConcurrentLinkedQueue<>();
 
     public TransactionProcessor() {
         AtomicInteger threadNumber = new AtomicInteger();
         pool = Executors.newFixedThreadPool(POOL_SIZE,
                 task -> new Thread(task, "txn-worker-" + threadNumber.incrementAndGet()));
+    }
+
+    /** A processor that already knows the given accounts. */
+    public TransactionProcessor(Collection<? extends Account> initialAccounts) {
+        this();
+        initialAccounts.forEach(this::register);
+    }
+
+    public void register(Account account) {
+        accounts.put(account.getAccountNumber(), account);
+    }
+
+    public Account getAccount(String accountNumber) {
+        return accounts.get(accountNumber);
+    }
+
+    /** Queues a parsed command (DEPOSIT or WITHDRAW) against the shared account map. */
+    public void submit(Command command) {
+        String description = command.type() + " " + command.accountNumber() + " " + command.amount();
+        submit(description, () -> {
+            Account account = accounts.get(command.accountNumber());
+            if (account == null) {
+                throw new AccountNotFoundException(command.accountNumber());
+            }
+            switch (command.type()) {
+                case DEPOSIT -> account.deposit(command.amount());
+                case WITHDRAW -> account.withdraw(command.amount());
+                case TRANSFER -> throw new BankException("TRANSFER needs a target account; use BankService.transfer()");
+            }
+            completedCommands.add(command);
+        });
     }
 
     /** Queues a task; one of the pool threads will run it. */
@@ -89,6 +127,11 @@ public class TransactionProcessor {
 
     public Queue<String> getWarnings() {
         return warnings;
+    }
+
+    /** Commands submitted with submit(Command) that succeeded, in completion order. */
+    public Queue<Command> getCompletedCommands() {
+        return completedCommands;
     }
 
     /** How many tasks each pool thread ran, sorted by thread name. */

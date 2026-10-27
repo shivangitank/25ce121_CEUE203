@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import exception.AccountNotFoundException;
 import exception.BankException;
@@ -22,12 +26,14 @@ import model.annotation.Positive;
  * Every failure is reported with an exception that explains what went wrong.
  * Methods that read or change the balance are synchronized, so only one
  * thread at a time can run them on the same account (no lost updates).
+ * Accounts sort by account number (Comparable) and keep their own history.
  */
-public abstract class Account implements Transactable, InterestBearing, Serializable {
+public abstract class Account implements Transactable, InterestBearing, Serializable, Comparable<Account> {
     private static final long serialVersionUID = 1L;
 
     public static final long DAILY_WITHDRAWAL_LIMIT = 1_00_000;
     public static final long PREMIUM_DAILY_WITHDRAWAL_LIMIT = 5_00_000;
+    private static final DateTimeFormatter HISTORY_TIME = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     private static int accountCounter = 0;
 
@@ -40,6 +46,7 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     private boolean active;
     private long withdrawnToday;
     private LocalDate withdrawalDay;
+    private ArrayList<String> history = new ArrayList<>();
     private transient String lastActivity;   // transient: not written to the file, null after loading
 
     protected Account(String ownerName, long openingBalance) {
@@ -47,6 +54,7 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
         this.ownerName = ownerName;
         this.balance = openingBalance;
         this.active = true;
+        record("OPENED", openingBalance);
     }
 
     protected Account(String ownerName) {
@@ -59,6 +67,7 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
         this.ownerName = ownerName;
         this.balance = balance;
         this.active = true;
+        record("OPENED", balance);
         reserveNumber(accountNumber);
     }
 
@@ -94,6 +103,9 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
+        if (history == null) {
+            history = new ArrayList<>();
+        }
         reserveNumber(accountNumber);
     }
 
@@ -112,11 +124,7 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     /** Adds money to the account. */
     @Override
     public synchronized void deposit(long amount) throws InvalidAmountException {
-        if (amount <= 0) {
-            throw new InvalidAmountException(amount);
-        }
-        balance += amount;
-        lastActivity = "Deposited " + amount;
+        credit(amount, "DEPOSIT");
     }
 
     /**
@@ -126,6 +134,22 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
      */
     @Override
     public synchronized boolean withdraw(long amount)
+            throws InsufficientFundsException, InvalidAmountException, DailyLimitExceededException {
+        debit(amount, "WITHDRAW");
+        return true;
+    }
+
+    /** Deposit logic shared by deposit() and transfer(); the caller holds this account's lock. */
+    private void credit(long amount, String description) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
+        balance += amount;
+        record(description, amount);
+    }
+
+    /** Withdrawal logic shared by withdraw() and transfer(); the caller holds this account's lock. */
+    private void debit(long amount, String description)
             throws InsufficientFundsException, InvalidAmountException, DailyLimitExceededException {
         if (amount <= 0) {
             throw new InvalidAmountException(amount);
@@ -148,8 +172,14 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
         }
         balance -= amount;
         withdrawnToday += amount;
-        lastActivity = "Withdrew " + amount;
-        return true;
+        record(description, -amount);
+    }
+
+    /** Adds a line such as "27-10-2026 10:15  DEPOSIT   +500  bal 5500" to the history. */
+    private void record(String description, long signedAmount) {
+        history.add(String.format("%s  %-20s %+9d  bal %d",
+                LocalDateTime.now().format(HISTORY_TIME), description, signedAmount, balance));
+        lastActivity = description + " " + Math.abs(signedAmount);
     }
 
     /**
@@ -168,16 +198,16 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
         if (to.equals(this)) {
             throw new BankException("Cannot transfer from " + accountNumber + " to itself");
         }
-        Account first = accountNumber.compareTo(to.accountNumber) < 0 ? this : to;
+        Account first = this.compareTo(to) < 0 ? this : to;
         Account second = first == this ? to : this;
         synchronized (first) {
             synchronized (second) {
                 boolean withdrawn = false;
                 boolean completed = false;
                 try {
-                    withdraw(amount);
+                    debit(amount, "TRANSFER TO " + to.accountNumber);
                     withdrawn = true;
-                    to.deposit(amount);
+                    to.credit(amount, "TRANSFER FROM " + accountNumber);
                     completed = true;
                 } catch (BankException e) {
                     if (withdrawn) {
@@ -195,6 +225,12 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     private synchronized void refund(long amount) {
         balance += amount;
         withdrawnToday -= amount;
+        record("REVERSAL", amount);
+    }
+
+    /** A copy of this account's transaction history, oldest first. */
+    public synchronized List<String> getHistory() {
+        return new ArrayList<>(history);
     }
 
     /** Higher cap for accounts marked with the Premium interface. */
@@ -257,5 +293,11 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     @Override
     public int hashCode() {
         return accountNumber.hashCode();
+    }
+
+    /** Natural order: by account number (AC0001 before AC0002). Consistent with equals(). */
+    @Override
+    public int compareTo(Account other) {
+        return accountNumber.compareTo(other.accountNumber);
     }
 }
