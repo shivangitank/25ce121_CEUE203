@@ -1,5 +1,6 @@
 package demo;
 
+import exception.BankException;
 import model.Account;
 import model.Command;
 import model.SavingsAccount;
@@ -13,7 +14,7 @@ import util.Validator;
  */
 public class Lab04Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BankException {
         System.out.println("Validators (one valid, one invalid input each):");
         check("isValidMobile(\"9876543210\")", Validator.isValidMobile("9876543210"));
         check("isValidMobile(\"12345\")", Validator.isValidMobile("12345"));

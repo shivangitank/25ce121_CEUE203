@@ -33,6 +33,12 @@ public class SavingsAccount extends Account {
         return getBalance() - amount >= minBalance;
     }
 
+    /** Everything above the minimum balance. */
+    @Override
+    public long getAvailableBalance() {
+        return Math.max(getBalance() - minBalance, 0);
+    }
+
     public long getMinBalance() {
         return minBalance;
     }

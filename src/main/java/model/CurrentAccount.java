@@ -39,6 +39,12 @@ public class CurrentAccount extends Account implements Premium {
         return getBalance() - amount >= -overdraftLimit;
     }
 
+    /** The balance plus the unused overdraft. */
+    @Override
+    public long getAvailableBalance() {
+        return getBalance() + overdraftLimit;
+    }
+
     public long getOverdraftLimit() {
         return overdraftLimit;
     }

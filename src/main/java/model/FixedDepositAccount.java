@@ -35,6 +35,17 @@ public class FixedDepositAccount extends Account {
         return isMatured() && amount <= getBalance();
     }
 
+    /** Nothing until maturity, then the whole balance. */
+    @Override
+    public long getAvailableBalance() {
+        return isMatured() ? getBalance() : 0;
+    }
+
+    @Override
+    protected String withdrawalBlockedReason() {
+        return isMatured() ? null : "fixed deposit is locked until " + maturityDate;
+    }
+
     public boolean isMatured() {
         return !LocalDate.now().isBefore(maturityDate);
     }

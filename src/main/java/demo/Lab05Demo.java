@@ -2,6 +2,7 @@ package demo;
 
 import java.time.LocalDate;
 
+import exception.BankException;
 import model.Account;
 import model.CurrentAccount;
 import model.FixedDepositAccount;
@@ -14,7 +15,7 @@ import model.SavingsAccount;
  */
 public class Lab05Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BankException {
         Account[] accounts = {
                 new SavingsAccount("Riya", 20000),
                 new CurrentAccount("Aman Traders", 5000, 10000),

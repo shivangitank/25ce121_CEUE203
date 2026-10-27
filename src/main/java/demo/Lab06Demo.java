@@ -2,6 +2,7 @@ package demo;
 
 import static util.Validator.*;
 
+import exception.BankException;
 import model.Account;
 import model.CurrentAccount;
 import model.FixedDepositAccount;
@@ -19,7 +20,7 @@ import service.WithdrawPolicy;
  */
 public class Lab06Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BankException {
         SavingsAccount savings = new SavingsAccount("Riya", 60000);
         CurrentAccount current = new CurrentAccount("Aman Traders", 80000);
         FixedDepositAccount fd = new FixedDepositAccount("Neha", 100000);

@@ -1,5 +1,12 @@
 package model;
 
+import java.time.LocalDate;
+
+import exception.AccountNotFoundException;
+import exception.BankException;
+import exception.DailyLimitExceededException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
 import model.annotation.Id;
 import model.annotation.MaxLength;
 import model.annotation.Positive;
@@ -9,8 +16,12 @@ import model.annotation.Positive;
  * only through deposit() and withdraw() - there is deliberately no public
  * setBalance(). Each subclass decides its own interest rate and withdrawal
  * rule; withdraw() calls canWithdraw(), so the right rule is picked at run time.
+ * Every failure is reported with an exception that explains what went wrong.
  */
 public abstract class Account implements Transactable, InterestBearing {
+    public static final long DAILY_WITHDRAWAL_LIMIT = 1_00_000;
+    public static final long PREMIUM_DAILY_WITHDRAWAL_LIMIT = 5_00_000;
+
     private static int accountCounter = 0;
 
     @Id
@@ -20,6 +31,9 @@ public abstract class Account implements Transactable, InterestBearing {
     @Positive
     private long balance;          // whole rupees
     private boolean active;
+    private long withdrawnToday;
+    private LocalDate withdrawalDay;
+    private String lastActivity;
 
     protected Account(String ownerName, long openingBalance) {
         this.accountNumber = generateAccountNumber();
@@ -48,6 +62,19 @@ public abstract class Account implements Transactable, InterestBearing {
     /** True if this account's rules allow taking out the given amount now. */
     public abstract boolean canWithdraw(long amount);
 
+    /** How much could be withdrawn right now under this account's rules (ignoring the daily limit). */
+    public long getAvailableBalance() {
+        return balance;
+    }
+
+    /**
+     * Why a withdrawal is blocked when the reason is not simply a low balance
+     * (e.g. a locked fixed deposit). Null means "not enough money".
+     */
+    protected String withdrawalBlockedReason() {
+        return null;
+    }
+
     /** Produces numbers such as AC0001, AC0002, ... from one counter shared by every account. */
     private static String generateAccountNumber() {
         accountCounter++;
@@ -66,35 +93,82 @@ public abstract class Account implements Transactable, InterestBearing {
         }
     }
 
-    /** Adds money to the account. Zero or negative amounts are ignored. */
+    /** Adds money to the account. */
     @Override
-    public void deposit(long amount) {
+    public void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
-            return;
+            throw new InvalidAmountException(amount);
         }
         balance += amount;
+        lastActivity = "Deposited " + amount;
     }
 
     /**
-     * Takes money out of the account if the subclass rule (canWithdraw) allows it.
-     * @return true on success; false (balance unchanged) otherwise
+     * Takes money out of the account if the subclass rule (canWithdraw) and
+     * the daily limit allow it. The balance is unchanged when an exception is thrown.
+     * @return true on success
      */
     @Override
-    public boolean withdraw(long amount) {
-        if (amount <= 0 || !canWithdraw(amount)) {
-            return false;
+    public boolean withdraw(long amount)
+            throws InsufficientFundsException, InvalidAmountException, DailyLimitExceededException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
+        if (!canWithdraw(amount)) {
+            long shortfall = Math.max(amount - Math.max(getAvailableBalance(), 0), 0);
+            String reason = withdrawalBlockedReason();
+            if (reason != null) {
+                throw new InsufficientFundsException(accountNumber, amount, shortfall, reason);
+            }
+            throw new InsufficientFundsException(accountNumber, amount, shortfall);
+        }
+        LocalDate today = LocalDate.now();
+        if (!today.equals(withdrawalDay)) {
+            withdrawalDay = today;          // a new day starts a new limit
+            withdrawnToday = 0;
+        }
+        if (withdrawnToday + amount > dailyLimit()) {
+            throw new DailyLimitExceededException(accountNumber, dailyLimit(), withdrawnToday);
         }
         balance -= amount;
+        withdrawnToday += amount;
+        lastActivity = "Withdrew " + amount;
         return true;
     }
 
-    /** Moves money to another account using withdraw() and deposit(). */
-    public boolean transferTo(Account target, long amount) {
-        if (target == null || target == this || !withdraw(amount)) {
-            return false;
+    /**
+     * Moves money to another account. It is all-or-nothing: if the deposit
+     * side fails after the withdrawal succeeded, the money is put back and the
+     * original exception is re-thrown to the caller.
+     */
+    public void transfer(Account to, long amount) throws BankException {
+        if (to == null) {
+            throw new AccountNotFoundException("(missing target account)");
         }
-        target.deposit(amount);
-        return true;
+        if (to.equals(this)) {
+            throw new BankException("Cannot transfer from " + accountNumber + " to itself");
+        }
+        boolean withdrawn = false;
+        boolean completed = false;
+        try {
+            withdraw(amount);
+            withdrawn = true;
+            to.deposit(amount);
+            completed = true;
+        } catch (BankException e) {
+            if (withdrawn) {
+                balance += amount;              // roll back the withdrawal
+                withdrawnToday -= amount;
+            }
+            throw e;
+        } finally {
+            lastActivity = (completed ? "Transferred " : "Failed transfer of ") + amount + " to " + to.accountNumber;
+        }
+    }
+
+    /** Higher cap for accounts marked with the Premium interface. */
+    public long dailyLimit() {
+        return this instanceof Premium ? PREMIUM_DAILY_WITHDRAWAL_LIMIT : DAILY_WITHDRAWAL_LIMIT;
     }
 
     public String getAccountNumber() {
@@ -117,6 +191,11 @@ public abstract class Account implements Transactable, InterestBearing {
     /** Freezes (false) or re-opens (true) the account. */
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    /** A short note about the last operation, e.g. "Deposited 500". */
+    public String getLastActivity() {
+        return lastActivity;
     }
 
     /** "SavingsAccount" -> "Savings", "FixedDepositAccount" -> "FixedDeposit". */
