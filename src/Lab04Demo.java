@@ -33,7 +33,7 @@ public class Lab04Demo {
         }
 
         System.out.println();
-        Account account = new Account("Riya", 5000);
+        Account account = new SavingsAccount("Riya", 5000);
         account.deposit(2000);
         account.withdraw(3000);
         System.out.println(StatementFormatter.buildStatement(account));

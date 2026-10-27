@@ -6,9 +6,9 @@ public class Lab02Demo {
 
     public static void main(String[] args) {
         Account[] accounts = {
-                new Account("Riya", 5000),
-                new Account("Aman", 12000),
-                new Account("Neha")             // chained constructor: opening balance 0
+                new SavingsAccount("Riya", 5000),
+                new CurrentAccount("Aman", 12000),
+                new CurrentAccount("Neha")      // chained constructor: opening balance 0
         };
 
         Account riya = accounts[0];

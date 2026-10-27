@@ -21,8 +21,10 @@ public final class StatementFormatter {
         sb.append(LINE).append('\n');
         sb.append(String.format("Account No : %s%n", account.getAccountNumber()));
         sb.append(String.format("Owner      : %s%n", account.getOwnerName()));
+        sb.append(String.format("Type       : %s%n", account.getAccountType()));
         sb.append(String.format("Status     : %s%n", account.isActive() ? "ACTIVE" : "INACTIVE"));
         sb.append(String.format("Balance    : %s%n", rupees(account.getBalance())));
+        sb.append(String.format(Locale.ROOT, "Interest   : %.1f%% a year%n", account.interestRate()));
         sb.append(String.format("Generated  : %s%n", LocalDateTime.now().format(STAMP)));
         sb.append(LINE);
         return sb.toString();

@@ -5,9 +5,9 @@
 public class Lab03Demo {
 
     public static void main(String[] args) {
-        Account a1 = new Account("AC0001", "Riya", 4000);
-        Account a2 = new Account("AC0001", "Riya", 4000);
-        Account a3 = new Account("Aman", 2500);       // gets the next free number
+        Account a1 = new SavingsAccount("AC0001", "Riya", 4000, 1000);
+        Account a2 = new SavingsAccount("AC0001", "Riya", 4000, 1000);
+        Account a3 = new CurrentAccount("Aman", 2500);  // gets the next free number
 
         System.out.println("a1 = " + a1);
         System.out.println("a2 = " + a2);
