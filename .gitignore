@@ -1,0 +1,12 @@
+# Build output
+out/
+*.class
+minibank.jar
+
+# Files the program generates at run time (accounts.dat, logs, reports)
+data/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
