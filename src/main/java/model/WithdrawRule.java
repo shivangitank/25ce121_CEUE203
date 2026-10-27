@@ -5,6 +5,7 @@ package model;
  * abstract method, so it can be written as a lambda:
  * {@code WithdrawRule rule = (account, amount) -> account.isActive();}
  */
+@FunctionalInterface
 public interface WithdrawRule {
 
     boolean allow(Account account, long amount);

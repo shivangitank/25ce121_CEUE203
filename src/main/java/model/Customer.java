@@ -1,5 +1,8 @@
 package model;
 
+import model.annotation.Id;
+import model.annotation.MaxLength;
+
 /**
  * A bank customer. The customer id is generated once from a static counter
  * and can never change afterwards.
@@ -7,9 +10,12 @@ package model;
 public class Customer implements Cloneable {
     private static long customerCounter = 100;
 
+    @Id
     private final String customerId;
+    @MaxLength(50)
     private String name;
     private String email;
+    @MaxLength(10)
     private String mobile;
     private Address address;
 
@@ -59,6 +65,7 @@ public class Customer implements Cloneable {
      * Field-by-field copy made by Object.clone(). Sharing the Address is safe
      * because Address is immutable.
      */
+    @Override
     public Customer clone() {
         try {
             return (Customer) super.clone();
@@ -67,6 +74,7 @@ public class Customer implements Cloneable {
         }
     }
 
+    @Override
     public String toString() {
         return customerId + " | " + name + " | " + mobile + " | " + email
                 + (address == null ? "" : " | " + address);
@@ -99,6 +107,7 @@ public class Customer implements Cloneable {
             return pincode;
         }
 
+        @Override
         public String toString() {
             return line + ", " + city + " - " + pincode;
         }

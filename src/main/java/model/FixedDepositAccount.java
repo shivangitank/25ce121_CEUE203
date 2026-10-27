@@ -24,11 +24,13 @@ public class FixedDepositAccount extends Account {
         this.maturityDate = maturityDate;
     }
 
+    @Override
     public double interestRate() {
         return 7.0;
     }
 
     /** Locked before maturity; after maturity any amount up to the balance may be taken. */
+    @Override
     public boolean canWithdraw(long amount) {
         return isMatured() && amount <= getBalance();
     }

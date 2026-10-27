@@ -26,6 +26,7 @@ public class Lab06Demo {
 
         // 1. The same rule written as an anonymous class and as a lambda.
         WithdrawRule anonymousRule = new WithdrawRule() {
+            @Override
             public boolean allow(Account account, long amount) {
                 return account.isActive() && amount <= 20000;
             }

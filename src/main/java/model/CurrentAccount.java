@@ -28,11 +28,13 @@ public class CurrentAccount extends Account implements Premium {
         this.overdraftLimit = overdraftLimit;
     }
 
+    @Override
     public double interestRate() {
         return 0;
     }
 
     /** Allowed while the balance stays at or above -overdraftLimit. */
+    @Override
     public boolean canWithdraw(long amount) {
         return getBalance() - amount >= -overdraftLimit;
     }

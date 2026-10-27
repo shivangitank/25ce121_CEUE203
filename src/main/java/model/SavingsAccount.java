@@ -22,11 +22,13 @@ public class SavingsAccount extends Account {
         this.minBalance = minBalance;
     }
 
+    @Override
     public double interestRate() {
         return 4.0;
     }
 
     /** Allowed only if the balance left behind is at least minBalance. */
+    @Override
     public boolean canWithdraw(long amount) {
         return getBalance() - amount >= minBalance;
     }

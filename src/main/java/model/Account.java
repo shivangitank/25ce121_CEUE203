@@ -1,5 +1,9 @@
 package model;
 
+import model.annotation.Id;
+import model.annotation.MaxLength;
+import model.annotation.Positive;
+
 /**
  * Base class for every MiniBank account. The balance is private and changes
  * only through deposit() and withdraw() - there is deliberately no public
@@ -9,8 +13,11 @@ package model;
 public abstract class Account implements Transactable, InterestBearing {
     private static int accountCounter = 0;
 
+    @Id
     private final String accountNumber;
+    @MaxLength(30)
     private String ownerName;
+    @Positive
     private long balance;          // whole rupees
     private boolean active;
 
@@ -35,6 +42,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** Yearly interest rate in percent. */
+    @Override
     public abstract double interestRate();
 
     /** True if this account's rules allow taking out the given amount now. */
@@ -59,6 +67,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** Adds money to the account. Zero or negative amounts are ignored. */
+    @Override
     public void deposit(long amount) {
         if (amount <= 0) {
             return;
@@ -70,6 +79,7 @@ public abstract class Account implements Transactable, InterestBearing {
      * Takes money out of the account if the subclass rule (canWithdraw) allows it.
      * @return true on success; false (balance unchanged) otherwise
      */
+    @Override
     public boolean withdraw(long amount) {
         if (amount <= 0 || !canWithdraw(amount)) {
             return false;
@@ -95,6 +105,7 @@ public abstract class Account implements Transactable, InterestBearing {
         return ownerName;
     }
 
+    @Override
     public long getBalance() {
         return balance;
     }
@@ -114,11 +125,13 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** One readable line, e.g. "AC0001 | Riya | 4000 | ACTIVE". */
+    @Override
     public String toString() {
         return accountNumber + " | " + ownerName + " | " + balance + " | " + (active ? "ACTIVE" : "INACTIVE");
     }
 
     /** Two accounts are the same account when their account numbers are equal. */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -131,6 +144,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** Uses the same field as equals(), so equal accounts always have equal hash codes. */
+    @Override
     public int hashCode() {
         return accountNumber.hashCode();
     }
