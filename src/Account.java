@@ -21,10 +21,31 @@ public class Account {
         this(ownerName, 0);
     }
 
+    /** Re-creates an account whose number is already known (for example, one read back from storage). */
+    public Account(String accountNumber, String ownerName, long balance) {
+        this.accountNumber = accountNumber;
+        this.ownerName = ownerName;
+        this.balance = balance;
+        this.active = true;
+        reserveNumber(accountNumber);
+    }
+
     /** Produces numbers such as AC0001, AC0002, ... from one counter shared by every account. */
     private static String generateAccountNumber() {
         accountCounter++;
         return String.format("AC%04d", accountCounter);
+    }
+
+    /** Moves the counter past an existing number so a generated number never repeats it. */
+    private static void reserveNumber(String accountNumber) {
+        try {
+            int used = Integer.parseInt(accountNumber.substring(2));
+            if (used > accountCounter) {
+                accountCounter = used;
+            }
+        } catch (RuntimeException notInAcFormat) {
+            // numbers not in the ACnnnn format do not affect the counter
+        }
     }
 
     /** Adds money to the account. Zero or negative amounts are ignored. */
@@ -70,5 +91,27 @@ public class Account {
 
     public boolean isActive() {
         return active;
+    }
+
+    /** One readable line, e.g. "AC0001 | Riya | 4000 | ACTIVE". */
+    public String toString() {
+        return accountNumber + " | " + ownerName + " | " + balance + " | " + (active ? "ACTIVE" : "INACTIVE");
+    }
+
+    /** Two accounts are the same account when their account numbers are equal. */
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Account)) {
+            return false;
+        }
+        Account other = (Account) o;
+        return accountNumber.equals(other.accountNumber);
+    }
+
+    /** Uses the same field as equals(), so equal accounts always have equal hash codes. */
+    public int hashCode() {
+        return accountNumber.hashCode();
     }
 }
