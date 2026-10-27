@@ -1,5 +1,9 @@
 package model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
 import model.annotation.Id;
 import model.annotation.MaxLength;
 
@@ -7,7 +11,9 @@ import model.annotation.MaxLength;
  * A bank customer. The customer id is generated once from a static counter
  * and can never change afterwards.
  */
-public class Customer implements Cloneable {
+public class Customer implements Cloneable, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static long customerCounter = 100;
 
     @Id
@@ -35,6 +41,18 @@ public class Customer implements Cloneable {
     private static synchronized String generateCustomerId() {
         customerCounter++;
         return "CUST" + customerCounter;
+    }
+
+    /** Keeps the id counter ahead of ids read back from a file. */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        synchronized (Customer.class) {
+            try {
+                customerCounter = Math.max(customerCounter, Long.parseLong(customerId.substring(4)));
+            } catch (RuntimeException notInCustFormat) {
+                // ids not in the CUSTnnn format do not affect the counter
+            }
+        }
     }
 
     public String getCustomerId() {
@@ -84,7 +102,9 @@ public class Customer implements Cloneable {
      * Postal address. A static nested class does not need a Customer object to
      * be created: new Customer.Address(...).
      */
-    public static class Address {
+    public static class Address implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private final String line;
         private final String city;
         private final String pincode;

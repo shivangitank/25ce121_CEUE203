@@ -5,6 +5,8 @@ package model;
  * down to minus the overdraft limit. Business accounts are Premium (higher limits).
  */
 public class CurrentAccount extends Account implements Premium {
+    private static final long serialVersionUID = 1L;
+
     public static final long DEFAULT_OVERDRAFT = 10000;
 
     private final long overdraftLimit;

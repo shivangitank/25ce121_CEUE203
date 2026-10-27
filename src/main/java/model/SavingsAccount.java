@@ -4,6 +4,8 @@ package model;
  * Savings account: earns 4% a year and must always keep a minimum balance.
  */
 public class SavingsAccount extends Account {
+    private static final long serialVersionUID = 1L;
+
     public static final long DEFAULT_MIN_BALANCE = 1000;
 
     private final long minBalance;

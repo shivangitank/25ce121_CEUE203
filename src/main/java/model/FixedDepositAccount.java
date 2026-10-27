@@ -6,6 +6,8 @@ import java.time.LocalDate;
  * Fixed deposit: earns 7% a year; the money is locked until the maturity date.
  */
 public class FixedDepositAccount extends Account {
+    private static final long serialVersionUID = 1L;
+
     public static final int DEFAULT_TERM_MONTHS = 12;
 
     private final LocalDate maturityDate;

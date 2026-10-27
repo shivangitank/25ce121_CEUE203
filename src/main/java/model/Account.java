@@ -1,5 +1,8 @@
 package model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import exception.AccountNotFoundException;
@@ -20,7 +23,9 @@ import model.annotation.Positive;
  * Methods that read or change the balance are synchronized, so only one
  * thread at a time can run them on the same account (no lost updates).
  */
-public abstract class Account implements Transactable, InterestBearing {
+public abstract class Account implements Transactable, InterestBearing, Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final long DAILY_WITHDRAWAL_LIMIT = 1_00_000;
     public static final long PREMIUM_DAILY_WITHDRAWAL_LIMIT = 5_00_000;
 
@@ -35,7 +40,7 @@ public abstract class Account implements Transactable, InterestBearing {
     private boolean active;
     private long withdrawnToday;
     private LocalDate withdrawalDay;
-    private String lastActivity;
+    private transient String lastActivity;   // transient: not written to the file, null after loading
 
     protected Account(String ownerName, long openingBalance) {
         this.accountNumber = generateAccountNumber();
@@ -81,6 +86,15 @@ public abstract class Account implements Transactable, InterestBearing {
     private static synchronized String generateAccountNumber() {
         accountCounter++;
         return String.format("AC%04d", accountCounter);
+    }
+
+    /**
+     * Called by Java while an account is being read back from a file. Constructors
+     * do not run during deserialization, so the counter is moved past this number here.
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        reserveNumber(accountNumber);
     }
 
     /** Moves the counter past an existing number so a generated number never repeats it. */
