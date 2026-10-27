@@ -17,6 +17,8 @@ import model.annotation.Positive;
  * setBalance(). Each subclass decides its own interest rate and withdrawal
  * rule; withdraw() calls canWithdraw(), so the right rule is picked at run time.
  * Every failure is reported with an exception that explains what went wrong.
+ * Methods that read or change the balance are synchronized, so only one
+ * thread at a time can run them on the same account (no lost updates).
  */
 public abstract class Account implements Transactable, InterestBearing {
     public static final long DAILY_WITHDRAWAL_LIMIT = 1_00_000;
@@ -76,13 +78,13 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** Produces numbers such as AC0001, AC0002, ... from one counter shared by every account. */
-    private static String generateAccountNumber() {
+    private static synchronized String generateAccountNumber() {
         accountCounter++;
         return String.format("AC%04d", accountCounter);
     }
 
     /** Moves the counter past an existing number so a generated number never repeats it. */
-    private static void reserveNumber(String accountNumber) {
+    private static synchronized void reserveNumber(String accountNumber) {
         try {
             int used = Integer.parseInt(accountNumber.substring(2));
             if (used > accountCounter) {
@@ -95,7 +97,7 @@ public abstract class Account implements Transactable, InterestBearing {
 
     /** Adds money to the account. */
     @Override
-    public void deposit(long amount) throws InvalidAmountException {
+    public synchronized void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
             throw new InvalidAmountException(amount);
         }
@@ -109,7 +111,7 @@ public abstract class Account implements Transactable, InterestBearing {
      * @return true on success
      */
     @Override
-    public boolean withdraw(long amount)
+    public synchronized boolean withdraw(long amount)
             throws InsufficientFundsException, InvalidAmountException, DailyLimitExceededException {
         if (amount <= 0) {
             throw new InvalidAmountException(amount);
@@ -157,13 +159,18 @@ public abstract class Account implements Transactable, InterestBearing {
             completed = true;
         } catch (BankException e) {
             if (withdrawn) {
-                balance += amount;              // roll back the withdrawal
-                withdrawnToday -= amount;
+                refund(amount);
             }
             throw e;
         } finally {
             lastActivity = (completed ? "Transferred " : "Failed transfer of ") + amount + " to " + to.accountNumber;
         }
+    }
+
+    /** Puts back money taken by a withdrawal that is being rolled back. */
+    private synchronized void refund(long amount) {
+        balance += amount;
+        withdrawnToday -= amount;
     }
 
     /** Higher cap for accounts marked with the Premium interface. */
@@ -180,7 +187,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     @Override
-    public long getBalance() {
+    public synchronized long getBalance() {
         return balance;
     }
 
@@ -194,7 +201,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     /** A short note about the last operation, e.g. "Deposited 500". */
-    public String getLastActivity() {
+    public synchronized String getLastActivity() {
         return lastActivity;
     }
 

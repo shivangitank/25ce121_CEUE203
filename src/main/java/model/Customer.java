@@ -32,7 +32,7 @@ public class Customer implements Cloneable {
     }
 
     /** Produces ids such as CUST101, CUST102, ... shared across all Customer objects. */
-    private static String generateCustomerId() {
+    private static synchronized String generateCustomerId() {
         customerCounter++;
         return "CUST" + customerCounter;
     }
