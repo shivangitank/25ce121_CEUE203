@@ -1,0 +1,57 @@
+# java -cp minibank.jar demo.Lab12Demo
+
+get("AC0002")   -> AC0002 | Aman | 2000 | ACTIVE
+get("AC9999")   -> null
+
+sortedByBalance() (Comparator, highest first):
+  AC0003 | Neha | 9000 | ACTIVE
+  AC0001 | Riya | 5000 | ACTIVE
+  AC0002 | Aman | 2000 | ACTIVE
+sortedByNumber() (Comparable, natural order):
+  AC0001 | Riya | 5000 | ACTIVE
+  AC0002 | Aman | 2000 | ACTIVE
+  AC0003 | Neha | 9000 | ACTIVE
+balanceAbove(3000):
+  AC0001 | Riya | 5000 | ACTIVE
+  AC0003 | Neha | 9000 | ACTIVE
+TreeMap keys (always sorted): [AC0001, AC0002, AC0003]
+List of owners [Riya, Aman, Riya, Neha] has 4 items; as a Set it has 3
+
+store.deposit("AC0042", 100) -> No account found with number AC0042
+AccountStore history (ArrayList<String>): [ADD AC0001 Riya, ADD AC0002 Aman, ADD AC0003 Neha, DEPOSIT AC0001 1500, WITHDRAW AC0002 500]
+
+Thread-safe processing: 40 commands on 4 threads over a ConcurrentHashMap
+  succeeded 40, failed 0
+  txn-worker-1 ran 9 tasks
+  txn-worker-2 ran 10 tasks
+  txn-worker-3 ran 8 tasks
+  txn-worker-4 ran 13 tasks
+  AC0001: 6500 + 20 x 100 = 8500
+  AC0002: 1500 - 20 x 50  = 500
+
+============================================================
+                     MINIBANK STATEMENT
+============================================================
+Account No : AC0001
+Owner      : Riya
+Type       : Savings
+Status     : ACTIVE
+Balance    : Rs. 8,500
+Available  : Rs. 7,500
+Interest   : 4.0% a year (about Rs. 340 this year)
+Rule       : keep a minimum balance of Rs. 1,000
+------------------------------------------------------------
+Transactions (10 most recent of 22):
+  27-10-2026 17:33  DEPOSIT                   +100  bal 7600
+  27-10-2026 17:33  DEPOSIT                   +100  bal 7700
+  27-10-2026 17:33  DEPOSIT                   +100  bal 7800
+  27-10-2026 17:33  DEPOSIT                   +100  bal 7900
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8000
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8100
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8200
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8300
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8400
+  27-10-2026 17:33  DEPOSIT                   +100  bal 8500
+------------------------------------------------------------
+Generated  : 27-10-2026 17:33
+============================================================

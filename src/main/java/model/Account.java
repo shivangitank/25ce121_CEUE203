@@ -46,6 +46,7 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     private boolean active;
     private long withdrawnToday;
     private LocalDate withdrawalDay;
+    private String customerId;
     private ArrayList<String> history = new ArrayList<>();
     private transient String lastActivity;   // transient: not written to the file, null after loading
 
@@ -244,6 +245,15 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
 
     public String getOwnerName() {
         return ownerName;
+    }
+
+    /** Id of the Customer who owns this account, or null if none was linked. */
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     @Override

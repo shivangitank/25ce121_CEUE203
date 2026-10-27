@@ -1,0 +1,15 @@
+# java -cp minibank.jar demo.Lab02Demo
+
+Opened AC0001 for Riya with balance 5000
+After deposit(2000)   : 7000
+withdraw(3000)  -> true : 4000
+withdraw(10000) -> false : 4000
+deposit(-500) rejected: Invalid amount -500: must be greater than 0
+Transferred 1000 from AC0002 to AC0003
+
+All balances:
+  AC0001  Riya  4000
+  AC0002  Aman  8500
+  AC0003  Neha  2500
+
+Customer CUST101: Riya Patel, riya.patel@example.com, 9876543210

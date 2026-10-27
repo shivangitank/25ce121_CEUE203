@@ -15,6 +15,7 @@ import exception.AccountNotFoundException;
 import exception.BankException;
 import model.Account;
 import model.Command;
+import model.WithdrawRule;
 
 /**
  * Runs banking tasks on a fixed pool of 4 reusable threads instead of
@@ -38,6 +39,7 @@ public class TransactionProcessor {
     private final Queue<String> failures = new ConcurrentLinkedQueue<>();
     private final Queue<String> warnings = new ConcurrentLinkedQueue<>();
     private final Queue<Command> completedCommands = new ConcurrentLinkedQueue<>();
+    private volatile WithdrawRule withdrawRule = (account, amount) -> true;
 
     public TransactionProcessor() {
         AtomicInteger threadNumber = new AtomicInteger();
@@ -59,6 +61,11 @@ public class TransactionProcessor {
         return accounts.get(accountNumber);
     }
 
+    /** Bank policy checked before every WITHDRAW command (default: allow all). */
+    public void setWithdrawRule(WithdrawRule withdrawRule) {
+        this.withdrawRule = withdrawRule;
+    }
+
     /** Queues a parsed command (DEPOSIT or WITHDRAW) against the shared account map. */
     public void submit(Command command) {
         String description = command.type() + " " + command.accountNumber() + " " + command.amount();
@@ -69,7 +76,12 @@ public class TransactionProcessor {
             }
             switch (command.type()) {
                 case DEPOSIT -> account.deposit(command.amount());
-                case WITHDRAW -> account.withdraw(command.amount());
+                case WITHDRAW -> {
+                    if (!withdrawRule.allow(account, command.amount())) {
+                        throw new BankException("blocked by bank withdrawal policy");
+                    }
+                    account.withdraw(command.amount());
+                }
                 case TRANSFER -> throw new BankException("TRANSFER needs a target account; use BankService.transfer()");
             }
             completedCommands.add(command);

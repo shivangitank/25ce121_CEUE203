@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import model.Account;
 import model.CurrentAccount;
+import model.Customer;
 import model.FixedDepositAccount;
 import model.SavingsAccount;
 
@@ -26,12 +27,21 @@ public final class StatementFormatter {
     }
 
     public static String buildStatement(Account account) {
+        return buildStatement(account, null);
+    }
+
+    /** Statement including the owner's contact details when the customer is known. */
+    public static String buildStatement(Account account, Customer customer) {
         StringBuilder sb = new StringBuilder();
         sb.append(LINE).append('\n');
         sb.append("                     MINIBANK STATEMENT\n");
         sb.append(LINE).append('\n');
         sb.append(String.format("Account No : %s%n", account.getAccountNumber()));
         sb.append(String.format("Owner      : %s%n", account.getOwnerName()));
+        if (customer != null) {
+            sb.append(String.format("Customer   : %s  (mobile %s, %s)%n",
+                    customer.getCustomerId(), customer.getMobile(), customer.getEmail()));
+        }
         sb.append(String.format("Type       : %s%n", account.getAccountType()));
         sb.append(String.format("Status     : %s%n", account.isActive() ? "ACTIVE" : "INACTIVE"));
         sb.append(String.format("Balance    : %s%n", rupees(account.getBalance())));

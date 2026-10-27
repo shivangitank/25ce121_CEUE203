@@ -1,0 +1,12 @@
+# java -cp minibank.jar demo.Lab07Demo
+
+Annotated fields found by reflection on Account:
+  String accountNumber -> @Id
+  String ownerName -> @MaxLength(30)
+  long balance -> @Positive(message="must be > 0")
+
+Account with balance -100 -> 1 error(s) [balance: must be > 0]
+Valid account (balance 5000) -> 0 error(s) []
+Owner name longer than 30 characters -> 1 error(s) [ownerName: must be at most 30 characters (was 38)]
+Customer with 11-character mobile (@MaxLength(10)) -> 1 error(s) [mobile: must be at most 10 characters (was 11)]
+Valid customer -> 0 error(s) []

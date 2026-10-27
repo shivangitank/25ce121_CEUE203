@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import model.TransactionType;
@@ -17,6 +17,7 @@ import model.TransactionType;
  * "DEPOSIT AC0001 500 2026-10-27T10:15:30". Lines are only ever added, never changed.
  */
 public final class TransactionLog {
+    private static final DateTimeFormatter TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private TransactionLog() {
         // only static methods
@@ -48,7 +49,8 @@ public final class TransactionLog {
         return TransactionType.TRANSFER + " " + fromAccount + " " + amount + " " + toAccount + " " + now();
     }
 
-    private static LocalDateTime now() {
-        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    /** The current time as "2026-10-27T10:15:30" (seconds always shown). */
+    public static String now() {
+        return LocalDateTime.now().format(TIMESTAMP);
     }
 }

@@ -1,0 +1,14 @@
+# java -cp minibank.jar demo.Lab05Demo
+
+Interest rate of each account:
+  AC0001 Savings       Riya         rate = 4.0%   monthly interest = 66.67
+  AC0002 Current       Aman Traders rate = 0.0%   monthly interest = 0.00
+  AC0003 FixedDeposit  Neha         rate = 7.0%   monthly interest = 583.33
+
+Can each account withdraw 15000?
+  Savings       -> true  (must keep minimum 1000)
+  Current       -> true  (overdraft up to 10000)
+  FixedDeposit  -> false (locked until 2027-10-27)
+
+Current account withdraw(12000) -> true, balance now -7000
+Matured FD withdraw(50000)      -> true, balance now 0

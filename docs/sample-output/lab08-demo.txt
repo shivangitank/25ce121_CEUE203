@@ -1,0 +1,21 @@
+# java -cp minibank.jar demo.Lab08Demo
+
+Withdrawal failed: short by 4000
+finally -> balance is still 1000
+
+Deposit rejected: Invalid amount -50: must be greater than 0
+FD withdrawal rejected: Cannot withdraw 5000 from AC0002: fixed deposit is locked until 2027-10-27
+First 60000 withdrawn, balance 240000
+Second 60000 rejected: Daily withdrawal limit of 100000 reached for AC0003: only 40000 more can be withdrawn today
+
+Transfer 3000 AC0004 -> AC0005 done
+  balances: AC0004=5000, AC0005=5000
+Transfer 9000 failed: Insufficient funds in AC0004: requested 9000, short by 5000
+  balances: AC0004=5000, AC0005=5000
+Transfer 100 failed: Cannot transfer from AC0004 to itself
+  balances: AC0004=5000, AC0004=5000
+
+try-with-resources:
+  [session] opened for teller Desk-1
+  [session] closed for teller Desk-1 after 1 successful operation(s)
+  caught after the session closed: Insufficient funds in AC0005: requested 100000, short by 95500

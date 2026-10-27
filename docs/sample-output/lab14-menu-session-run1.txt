@@ -1,0 +1,229 @@
+# Practical 14 - final MiniBank, first run (java -jar minibank.jar <fresh data folder>)
+# Input typed, one per line:
+#   1, 1, Riya Patel, 9876543210, riya.patel@example.com, 5000,
+#   1, 2, Aman Traders, 12345, 9123456780, aman@example.com, 20000,
+#   2, AC0001, 2000,  3, AC0001, 3000,  3, AC0001, 10000,  4, AC0002, AC0001, 7000,
+#   5, AC0001,  6,  7, riya,  8, SAMPLE,  9,  10,  11
+
+============================================================
+  MiniBank  |  CHARUSAT Campus, Changa
+============================================================
+No saved accounts yet - starting fresh.
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Account types:
+  1. Savings - 4% interest, keep a minimum balance of Rs. 1,000
+  2. Current - no interest, overdraft up to Rs. 10,000, Premium limits
+  3. Fixed deposit - 7% interest, locked for 12 months
+Account type (1-3): Owner name: Mobile number: Email: Opening deposit (Rs.): Opened Savings account AC0001 for Riya Patel with Rs. 5,000 (customer id CUST101).
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Account types:
+  1. Savings - 4% interest, keep a minimum balance of Rs. 1,000
+  2. Current - no interest, overdraft up to Rs. 10,000, Premium limits
+  3. Fixed deposit - 7% interest, locked for 12 months
+Account type (1-3): Owner name: Mobile number:   Enter 10 digits starting with 6, 7, 8 or 9. (Press Enter on an empty line to cancel.)
+Mobile number: Email: Opening deposit (Rs.): Opened Current account AC0002 for Aman Traders with Rs. 20,000 (customer id CUST102).
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Deposit to account: Amount to deposit (Rs.): Deposited Rs. 2,000 into AC0001. New balance: Rs. 7,000
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Withdraw from account: Amount to withdraw (Rs.): Withdrew Rs. 3,000 from AC0001. New balance: Rs. 4,000
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Withdraw from account: Amount to withdraw (Rs.): Sorry - Insufficient funds in AC0001: requested 10000, short by 7000
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): From account: To account: Amount to transfer (Rs.): Transferred Rs. 7,000 from AC0002 to AC0001.
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Account number: ============================================================
+                     MINIBANK STATEMENT
+============================================================
+Account No : AC0001
+Owner      : Riya Patel
+Customer   : CUST101  (mobile 9876543210, riya.patel@example.com)
+Type       : Savings
+Status     : ACTIVE
+Balance    : Rs. 11,000
+Available  : Rs. 10,000
+Interest   : 4.0% a year (about Rs. 440 this year)
+Rule       : keep a minimum balance of Rs. 1,000
+------------------------------------------------------------
+Transactions (4 most recent of 4):
+  27-10-2026 17:34  OPENED                   +5000  bal 5000
+  27-10-2026 17:34  DEPOSIT                  +2000  bal 7000
+  27-10-2026 17:34  WITHDRAW                 -3000  bal 4000
+  27-10-2026 17:34  TRANSFER FROM AC0002     +7000  bal 11000
+------------------------------------------------------------
+Generated  : 27-10-2026 17:34
+============================================================
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Account  Owner                    Type                 Balance  Status
+AC0001   Riya Patel               Savings           Rs. 11,000  ACTIVE
+AC0002   Aman Traders             Current           Rs. 13,000  ACTIVE
+2 account(s), total balance Rs. 24,000
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Name (or part of it): Account  Owner                    Type                 Balance  Status
+AC0001   Riya Patel               Savings           Rs. 11,000  ACTIVE
+1 account(s), total balance Rs. 11,000
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Type one command per line, e.g.  DEPOSIT AC0001 500  or  WITHDRAW AC0002 200
+Type SAMPLE for a ready-made batch; an empty line runs what you typed.
+  command>   added 40 sample commands
+Batch finished in 30 ms: 40 of 40 succeeded.
+Tasks per pool thread:  txn-worker-1=11  txn-worker-2=10  txn-worker-3=9  txn-worker-4=10
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): MiniBank - End-of-day report
+Generated   : 2026-10-27 17:34:04
+Logs folder : data\logs
+--------------------------------------------------------
+Files (1 read, 0 skipped):
+  transactions-2026-10-27.log         1,815 bytes   modified 2026-10-27 17:34:04
+--------------------------------------------------------
+Deposits    :   23   Rs. 29,000
+Withdrawals :   21   Rs. 4,000
+Transfers   :    1   Rs. 7,000 (moved between accounts)
+Net change  :        Rs. 25,000
+(saved to data\reports\eod-report-2026-10-27.txt)
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): Working hours: Mon-Fri 10:00 AM - 4:00 PM, Sat 10:00 AM - 1:00 PM (closed on Sundays and bank holidays)
+
+ 1. Open a new account
+ 2. Deposit money
+ 3. Withdraw money
+ 4. Transfer between accounts
+ 5. View account statement
+ 6. List all accounts
+ 7. Search accounts by owner name
+ 8. Process a batch of transactions (thread pool)
+ 9. Generate end-of-day report
+10. Bank working hours
+11. Save and exit
+Enter your choice (1-11): All accounts saved. Thank you for banking with MiniBank. Goodbye!

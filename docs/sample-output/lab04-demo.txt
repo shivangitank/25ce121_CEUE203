@@ -1,0 +1,40 @@
+# java -cp minibank.jar demo.Lab04Demo
+
+Validators (one valid, one invalid input each):
+  isValidMobile("9876543210")      -> true
+  isValidMobile("12345")           -> false
+  isValidEmail("abc@xyz.com")      -> true
+  isValidEmail("abc@xyz")          -> false
+  isValidPan("ABCDE1234F")         -> true
+  isValidPan("ABCD12345F")         -> false
+  isValidIfsc("SBIN0001234")       -> true
+  isValidIfsc("SBIN1001234")       -> false
+  isValidAmount("500")             -> true
+  isValidAmount("-50")             -> false
+
+parse("DEPOSIT AC0001 500")
+  type=DEPOSIT, accountNumber=AC0001, amount=500
+parse("DEPOSIT AC0001") rejected: Expected 3 parts (TYPE ACCOUNT AMOUNT) but found 2 in "DEPOSIT AC0001"
+parse("WITHDRAW AC0001 50 extra") rejected: Expected 3 parts (TYPE ACCOUNT AMOUNT) but found 4 in "WITHDRAW AC0001 50 extra"
+parse("PAY AC0001 50") rejected: Unknown transaction type: PAY
+parse("DEPOSIT AC0001 -5") rejected: Invalid amount: -5 (must be a positive whole number)
+
+============================================================
+                     MINIBANK STATEMENT
+============================================================
+Account No : AC0001
+Owner      : Riya
+Type       : Savings
+Status     : ACTIVE
+Balance    : Rs. 4,000
+Available  : Rs. 3,000
+Interest   : 4.0% a year (about Rs. 160 this year)
+Rule       : keep a minimum balance of Rs. 1,000
+------------------------------------------------------------
+Transactions (3 most recent of 3):
+  27-10-2026 17:33  OPENED                   +5000  bal 5000
+  27-10-2026 17:33  DEPOSIT                  +2000  bal 7000
+  27-10-2026 17:33  WITHDRAW                 -3000  bal 4000
+------------------------------------------------------------
+Generated  : 27-10-2026 17:33
+============================================================

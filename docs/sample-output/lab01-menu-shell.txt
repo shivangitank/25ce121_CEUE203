@@ -1,0 +1,31 @@
+# Practical 1 (tag lab-01) - menu shell. Input typed: 2, abc, 9, 5, 6
+
+==============================================
+  MiniBank  |  CHARUSAT Campus, Changa
+==============================================
+
+1. Open a new account
+2. Deposit money
+3. Withdraw money
+4. Transfer between accounts
+5. Bank working hours
+6. Exit
+Enter your choice (1-6): Deposit - to be implemented in a later lab
+
+1. Open a new account
+2. Deposit money
+3. Withdraw money
+4. Transfer between accounts
+5. Bank working hours
+6. Exit
+Enter your choice (1-6): Invalid choice 'abc'. Please enter a number from 1 to 6.
+Enter your choice (1-6): Invalid choice '9'. Please enter a number from 1 to 6.
+Enter your choice (1-6): Working hours: Mon-Fri 10:00 AM - 4:00 PM, Sat 10:00 AM - 1:00 PM
+
+1. Open a new account
+2. Deposit money
+3. Withdraw money
+4. Transfer between accounts
+5. Bank working hours
+6. Exit
+Enter your choice (1-6): Thank you for banking with MiniBank. Goodbye!

@@ -1,0 +1,25 @@
+# java -cp minibank.jar demo.Lab06Demo
+
+WithdrawRule: active and amount <= 20000
+  amount 5000   anonymous class -> true  lambda -> true
+  amount 20000  anonymous class -> true  lambda -> true
+  amount 25000  anonymous class -> false lambda -> false
+
+Interest (InterestBearing default methods):
+  rate 4.0%  balance 60000   yearly   2400.00  monthly   200.00
+  rate 0.0%  balance 80000   yearly      0.00  monthly     0.00
+  rate 7.0%  balance 100000  yearly   7000.00  monthly   583.33
+  static InterestBearing.simpleInterest(10000, 4.0, 2) = 800.00
+
+Deposited 500 through a Transactable reference -> balance 60500
+
+  Savings       Premium? false limit per withdrawal 50000
+  Current       Premium? true  limit per withdrawal 200000
+  FixedDeposit  Premium? false limit per withdrawal 50000
+  STANDARD policy, savings withdraw 55000 -> false
+  STANDARD policy, current withdraw 55000 -> true
+  STANDARD policy, frozen savings withdraw 100 -> false
+
+Static import of util.Validator:
+  isValidMobile("9876543210") -> true
+  isValidEmail("riya@")        -> false

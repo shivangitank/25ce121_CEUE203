@@ -1,0 +1,36 @@
+# java -cp minibank.jar demo.Lab10Demo
+
+1) TransactionProcessor - 22 tasks on a pool of 4 threads
+  WARNING: a task on txn-worker-2 took 606 ms (limit 500 ms)
+   succeeded: 21, failed: 1
+   failed: WITHDRAW AC0002 99999 -> Insufficient funds in AC0002: requested 99999, short by 98999
+   tasks per pool thread: {txn-worker-1=4, txn-worker-2=5, txn-worker-3=9, txn-worker-4=4}
+   final balances: AC0001 | Riya | 10000 | ACTIVE  /  AC0002 | Aman | 3000 | ACTIVE
+
+2) Producer-consumer with wait()/notifyAll() (buffer of 3)
+   produced #1 DEPOSIT 10
+   produced #2 DEPOSIT 20
+   produced #3 DEPOSIT 30
+   produced #4 DEPOSIT 40
+   consumed #1 DEPOSIT 10 -> balance 1010
+   produced #5 DEPOSIT 50
+   consumed #2 DEPOSIT 20 -> balance 1030
+   produced #6 DEPOSIT 60
+   consumed #3 DEPOSIT 30 -> balance 1060
+   produced #7 DEPOSIT 70
+   consumed #4 DEPOSIT 40 -> balance 1100
+   produced #8 DEPOSIT 80
+   consumed #5 DEPOSIT 50 -> balance 1150
+   consumed #6 DEPOSIT 60 -> balance 1210
+   consumed #7 DEPOSIT 70 -> balance 1280
+   consumed #8 DEPOSIT 80 -> balance 1360
+   expected balance 1000 + 10+20+...+80 = 1360, actual 1360
+
+3a) Opposite lock order: A->B and B->A
+   DEADLOCK detected - the program would hang forever:
+     transfer-A-to-B is BLOCKED, waiting for a lock held by transfer-B-to-A
+     transfer-B-to-A is BLOCKED, waiting for a lock held by transfer-A-to-B
+
+3b) Fixed: Account.transfer() always locks the smaller account number first
+   both threads finished 50 transfers each in 111 ms
+   balances: AC0006=5000, AC0007=5000 (total still 10000)

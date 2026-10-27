@@ -15,7 +15,7 @@ public final class Validator {
     private static final Pattern IFSC = Pattern.compile("^[A-Z]{4}0[A-Z0-9]{6}$");
     private static final Pattern AMOUNT = Pattern.compile("^[1-9][0-9]{0,14}$");
     private static final Pattern ACCOUNT_NUMBER = Pattern.compile("^AC[0-9]{4,}$");
-    private static final Pattern NAME = Pattern.compile("^[A-Za-z][A-Za-z .'-]{0,49}$");
+    private static final Pattern NAME = Pattern.compile("^[A-Za-z][A-Za-z .'-]{0,29}$");
 
     private Validator() {
         // only static methods
@@ -50,7 +50,7 @@ public final class Validator {
         return matches(ACCOUNT_NUMBER, accountNumber);
     }
 
-    /** A person's name: letters, spaces, dots, apostrophes and hyphens, at most 50 characters. */
+    /** A person's name: letters, spaces, dots, apostrophes and hyphens, at most 30 characters. */
     public static boolean isValidName(String name) {
         return matches(NAME, name);
     }

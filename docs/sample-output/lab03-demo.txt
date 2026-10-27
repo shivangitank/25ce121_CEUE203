@@ -1,0 +1,17 @@
+# java -cp minibank.jar demo.Lab03Demo
+
+a1 = AC0001 | Riya | 4000 | ACTIVE
+a2 = AC0001 | Riya | 4000 | ACTIVE
+a3 = AC0002 | Aman | 2500 | ACTIVE
+a1 == a2           : false   (two different objects)
+a1.equals(a2)      : true    (same account number)
+a1.equals(a3)      : false
+hash codes equal   : true
+a1 instanceof Account  : true
+"AC0001" instanceof Account : false
+
+customer : CUST101 | Riya Patel | 9876543210 | riya.patel@example.com | 12, Station Road, Anand - 388001
+clone    : CUST101 | Riya Patel | 9876543210 | riya.patel@example.com | 12, Station Road, Anand - 388001
+same object?         false
+same customer id?    true
+city from address    Anand

@@ -1,0 +1,32 @@
+# java -cp minibank.jar demo.Lab11Demo
+
+Before saving:
+  AC0001 | Riya | 3800 | ACTIVE   lastActivity = Transferred 700 to AC0002
+  AC0002 | Aman | 2500 | ACTIVE   lastActivity = TRANSFER FROM AC0001 700
+  AC0003 | Neha | 10500 | ACTIVE   lastActivity = DEPOSIT 1500
+
+Saved 3 accounts to data\lab11-demo\accounts.dat (1254 bytes)
+Reloaded 3 accounts into a new array:
+  AC0001 | Riya | 3800 | ACTIVE   lastActivity = null   same data? true   same object? false
+  AC0002 | Aman | 2500 | ACTIVE   lastActivity = null   same data? true   same object? false
+  AC0003 | Neha | 10500 | ACTIVE   lastActivity = null   same data? true   same object? false
+  (lastActivity is transient, so it was not saved and is null after loading)
+
+Report written to data\lab11-demo\reports\eod-report.txt:
+MiniBank - End-of-day report
+Generated   : 2026-10-27 17:33:49
+Logs folder : data\lab11-demo\logs
+--------------------------------------------------------
+Files (2 read, 2 skipped):
+  empty.log                        skipped (empty)
+  notes.txt                        skipped (not a .log file)
+  transactions-2026-10-27.log           212 bytes   modified 2026-10-27 17:33:48
+  transactions-branch2.log               64 bytes   modified 2026-10-27 17:33:48
+--------------------------------------------------------
+Deposits    :    3   Rs. 2,300
+Withdrawals :    2   Rs. 1,200
+Transfers   :    1   Rs. 700 (moved between accounts)
+Net change  :        Rs. 1,100
+Malformed lines skipped: 1
+
+Check: deposits 500+1500+300 = 2300, withdrawals 200+1000 = 1200

@@ -1,0 +1,74 @@
+# Commit 85135f3 (before synchronized was added): demo.Lab09Demo on the unsynchronized Account
+
+Run 1: thread state before start = NEW
+  worker-8 started (RUNNABLE)
+  worker-2 started (RUNNABLE)
+  worker-9 started (RUNNABLE)
+  worker-7 started (RUNNABLE)
+  worker-5 started (RUNNABLE)
+  worker-1 started (RUNNABLE)
+  worker-4 started (RUNNABLE)
+  worker-6 started (RUNNABLE)
+  worker-3 started (RUNNABLE)
+  worker-10 started (RUNNABLE)
+  worker-7 finished 1000 deposits
+  worker-2 finished 1000 deposits
+  worker-8 finished 1000 deposits
+  worker-9 finished 1000 deposits
+  worker-6 finished 1000 deposits
+  worker-1 finished 1000 deposits
+  worker-3 finished 1000 deposits
+  worker-4 finished 1000 deposits
+  worker-5 finished 1000 deposits
+  worker-10 finished 1000 deposits
+Run 1: thread state after join  = TERMINATED
+Run 1: expected 10000, actual balance 9397
+
+Run 2: thread state before start = NEW
+  worker-1 started (RUNNABLE)
+  worker-2 started (RUNNABLE)
+  worker-3 started (RUNNABLE)
+  worker-4 started (RUNNABLE)
+  worker-5 started (RUNNABLE)
+  worker-6 started (RUNNABLE)
+  worker-7 started (RUNNABLE)
+  worker-8 started (RUNNABLE)
+  worker-9 started (RUNNABLE)
+  worker-1 finished 1000 deposits
+  worker-2 finished 1000 deposits
+  worker-3 finished 1000 deposits
+  worker-5 finished 1000 deposits
+  worker-8 finished 1000 deposits
+  worker-4 finished 1000 deposits
+  worker-7 finished 1000 deposits
+  worker-6 finished 1000 deposits
+  worker-9 finished 1000 deposits
+  worker-10 started (RUNNABLE)
+  worker-10 finished 1000 deposits
+Run 2: thread state after join  = TERMINATED
+Run 2: expected 10000, actual balance 7041
+
+Run 3: thread state before start = NEW
+  worker-1 started (RUNNABLE)
+  worker-2 started (RUNNABLE)
+  worker-3 started (RUNNABLE)
+  worker-4 started (RUNNABLE)
+  worker-5 started (RUNNABLE)
+  worker-6 started (RUNNABLE)
+  worker-7 started (RUNNABLE)
+  worker-8 started (RUNNABLE)
+  worker-2 finished 1000 deposits
+  worker-1 finished 1000 deposits
+  worker-4 finished 1000 deposits
+  worker-5 finished 1000 deposits
+  worker-10 started (RUNNABLE)
+  worker-3 finished 1000 deposits
+  worker-6 finished 1000 deposits
+  worker-7 finished 1000 deposits
+  worker-8 finished 1000 deposits
+  worker-9 started (RUNNABLE)
+  worker-10 finished 1000 deposits
+  worker-9 finished 1000 deposits
+Run 3: thread state after join  = TERMINATED
+Run 3: expected 10000, actual balance 7620
+

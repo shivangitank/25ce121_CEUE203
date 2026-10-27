@@ -9,8 +9,13 @@ public enum MenuOption {
     DEPOSIT("Deposit money"),
     WITHDRAW("Withdraw money"),
     TRANSFER("Transfer between accounts"),
+    STATEMENT("View account statement"),
+    LIST_ACCOUNTS("List all accounts"),
+    SEARCH_BY_OWNER("Search accounts by owner name"),
+    BATCH("Process a batch of transactions (thread pool)"),
+    REPORT("Generate end-of-day report"),
     WORKING_HOURS("Bank working hours"),
-    EXIT("Exit");
+    EXIT("Save and exit");
 
     private final String label;
 
